@@ -1,0 +1,12 @@
+{
+  "name": "SA Solutions",
+  "description": "Technology-Driven Digital Transformation Studio offering custom software, DevOps, marketing, and design services.",
+  "requestFramePermissions": [
+    "camera",
+    "microphone",
+    "geolocation"
+  ],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

@@ -323,31 +323,45 @@
     box-shadow: 0 0 20px rgba(212, 175, 55, 0.4);
   }
   @media (max-width: 900px) {
-    .nav-links { display: none; }
+    .nav-links { display: none !important; }
+    .nav-cta { display: none !important; }
+    .mobile-menu-btn { display: block !important; }
   }
 
   /* Mobile Nav Button */
   .mobile-menu-btn {
-    display: none; background: transparent; border: none; color: var(--gold); font-size: 1.5rem; cursor: pointer;
-  }
-  @media (max-width: 900px) {
-    .mobile-menu-btn { display: block; }
+    display: none; background: transparent; border: none; color: var(--gold); font-size: 1.8rem; cursor: pointer;
+    z-index: 2001; padding: 8px; margin-left: auto;
   }
 
   /* Mobile Nav Overlay */
   .mobile-nav-overlay {
-    position: fixed; inset: 0; background: rgba(8, 27, 47, 0.98); backdrop-filter: blur(20px);
-    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 24px;
-    z-index: 99; opacity: 0; pointer-events: none; transition: all 0.4s ease; transform: translateY(-10px);
+    position: fixed; inset: 0; width: 100%; height: 100%;
+    background: rgba(8, 27, 47, 0.99); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
+    z-index: 2000; display: flex; flex-direction: column; justify-content: flex-start; align-items: center; gap: 14px;
+    opacity: 0; visibility: hidden; transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1); transform: translateY(-20px);
+    overflow-y: auto; padding: 80px 24px 40px;
   }
   .mobile-nav-overlay.active {
-    opacity: 1; pointer-events: auto; transform: translateY(0);
+    opacity: 1; visibility: visible; transform: translateY(0); pointer-events: auto;
   }
   .mobile-nav-overlay a {
-    color: var(--text); font-family: 'Space Grotesk', sans-serif; font-size: 1.5rem; font-weight: 700; text-decoration: none;
-    transition: color 0.3s; text-transform: uppercase; letter-spacing: 2px;
+    color: var(--text); font-family: 'Space Grotesk', sans-serif; font-size: 1.2rem; font-weight: 700; text-decoration: none;
+    transition: color 0.3s; text-transform: uppercase; letter-spacing: 1px;
+    text-align: center; width: 100%; display: block; padding: 6px 0;
   }
   .mobile-nav-overlay a:hover { color: var(--gold); }
+
+  @media (max-width: 768px) {
+    .container { padding: 40px 16px 60px !important; }
+    .header-section { margin-bottom: 30px !important; }
+    .main-title { font-size: 2.2rem !important; }
+    .subtitle { font-size: 0.95rem !important; line-height: 1.5 !important; }
+    .career-card { padding: 30px 20px !important; }
+    .apply-modal-content { padding: 24px !important; }
+    .nav-brand span { font-size: 1.1rem !important; }
+    .nav-brand img { height: 36px !important; }
+  }
 
   /* Application Form Modal */
   .apply-modal-overlay {
@@ -433,11 +447,21 @@
 </header>
 
 <div class="mobile-nav-overlay" id="mobileNavOverlay">
+  <a href="index.html#hero">Home</a>
   <a href="index.html#about">About</a>
   <a href="index.html#mission">Mission</a>
   <a style="color: var(--gold); margin-top: 16px; font-size: 0.9rem;" href="javascript:void(0);">Services</a>
-  <a href="index.html#methodology">Approach</a>
-  <a href="careers.html">Careers</a>
+  <a href="web-design.html">Web Development</a>
+  <a href="app-development.html">App Development</a>
+  <a href="digital-marketing.html">Digital Marketing</a>
+  <a href="cloud-devops.html">Cloud & DevOps</a>
+  <a href="it-consulting.html">IT Consulting</a>
+  <a href="automation.html">Business Automation</a>
+  <a href="graphic-design.html">Graphic Design</a>
+  <a style="color: var(--gold); margin-top: 16px; font-size: 0.9rem;" href="javascript:void(0);">Projects</a>
+  <a href="index.html#methodology">Projects Portfolio</a>
+  <a href="index.html#collaborate">Collaborate</a>
+  <a href="index.html#contactForm" style="color: var(--gold); border: 1px solid rgba(212, 175, 55, 0.5); border-radius: 999px; padding: 12px 32px; margin-top: 16px; width: auto; max-width: 220px; font-size: 1rem;">Get in Touch</a>
 </div>
 
 <div class="container">
@@ -682,15 +706,18 @@
       if(mobileNav.classList.contains('active')) {
         mobileNav.classList.remove('active');
         mobileBtn.innerHTML = '☰';
+        document.body.style.overflow = '';
       } else {
         mobileNav.classList.add('active');
         mobileBtn.innerHTML = '✕';
+        document.body.style.overflow = 'hidden';
       }
     });
     mobileNav.querySelectorAll('a').forEach(link => {
       link.addEventListener('click', () => {
         mobileNav.classList.remove('active');
         mobileBtn.innerHTML = '☰';
+        document.body.style.overflow = '';
       });
     });
   }
@@ -909,7 +936,7 @@ appForm.addEventListener("submit", async (e) => {
         formData.append("position", document.getElementById("aPosition").value);
         formData.append("resume", resumeFile.files[0]);
 
-        const response = await fetch("http://localhost:5000/api/apply", {
+        const response = await fetch("/api/apply", {
             method: "POST",
             body: formData
         });
