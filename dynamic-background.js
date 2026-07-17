@@ -69,19 +69,6 @@ if (holder) {
   
   // Shared logo target that can be animated by GSAP on specific pages
   const logoTarget = { x: 3.2, y: 1.2, z: -1.6, scale: 0.34 };
-  
-  function updateTargetForResponsive() {
-    if (window.innerWidth <= 768) {
-      logoTarget.x = 0;
-      logoTarget.y = 0;
-      logoTarget.scale = 0.45;
-    } else {
-      logoTarget.x = 3.2;
-      logoTarget.y = 1.2;
-      logoTarget.scale = 0.34;
-    }
-  }
-  updateTargetForResponsive();
   window.dynamicLogoTarget = logoTarget;
   
   function animate() {
@@ -115,6 +102,5 @@ if (holder) {
     camera.aspect = window.innerWidth/window.innerHeight;
     camera.updateProjectionMatrix();
     renderer.setSize(window.innerWidth, window.innerHeight);
-    updateTargetForResponsive();
   });
 }

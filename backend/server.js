@@ -14,7 +14,7 @@ app.use("/api/contact", require("./routes/contact"));
 app.use("/api/apply", require("./routes/apply"));
 
 // Serve static frontend files from the root of the workspace
-app.use(express.static(path.join(__dirname, "..")));
+app.use(express.static(path.join(__dirname, ".."), { extensions: ['html'] }));
 
 const PORT = process.env.PORT || 3000;
 
