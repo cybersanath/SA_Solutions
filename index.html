@@ -2416,42 +2416,79 @@ combining creative thinking with strategic implementation to deliver real busine
 
 
     /* ---------- Methodology: pinned hub, steps appear as user scrolls ---------- */
-    ScrollTrigger.create({
-      trigger: '#methodology',
-      start: 'top top',
-      end: '+=80%',
-      pin: '.method-pin',
-      scrub: 0.5,
-      onUpdate: (self) => {
-        const p = self.progress;
-        const steps = document.querySelectorAll('.hub-step');
-        const ring = document.querySelector('.hub-ring');
+    const mm = gsap.matchMedia();
 
-        // Logo moves to the center first (progress 0 to 0.25)
-        if (window.dynamicLogoTarget) {
-          const isMobile = window.innerWidth <= 768;
-          const logoProgress = Math.min(p / 0.25, 1);
-          if (isMobile) {
-            window.dynamicLogoTarget.x = 0;
-            window.dynamicLogoTarget.y = gsap.utils.interpolate(1.0, 0.2, logoProgress);
-            window.dynamicLogoTarget.scale = gsap.utils.interpolate(0.2, 0.45, logoProgress);
-          } else {
+    mm.add("(min-width: 769px)", () => {
+      // DESKTOP: Pin the methodology section and scrub steps & logo
+      ScrollTrigger.create({
+        trigger: '#methodology',
+        start: 'top top',
+        end: '+=80%',
+        pin: '.method-pin',
+        scrub: 0.5,
+        onUpdate: (self) => {
+          const p = self.progress;
+          const steps = document.querySelectorAll('.hub-step');
+          const ring = document.querySelector('.hub-ring');
+
+          if (window.dynamicLogoTarget) {
+            const logoProgress = Math.min(p / 0.25, 1);
             window.dynamicLogoTarget.x = gsap.utils.interpolate(3.2, 0, logoProgress);
             window.dynamicLogoTarget.y = gsap.utils.interpolate(1.2, 0.2, logoProgress);
             window.dynamicLogoTarget.scale = gsap.utils.interpolate(0.34, 0.75, logoProgress);
           }
-        }
 
-        // Then steps appear (progress 0.25 to 1.0)
-        const stepsProgress = Math.max(0, (p - 0.25) / 0.75);
-        steps.forEach((s, i) => {
-          const threshold = i / steps.length;
-          const local = Math.min(Math.max((stepsProgress - threshold) * steps.length, 0), 1);
-          s.style.opacity = local;
-          s.style.transform += ''; // keep base transform
-        });
-        if (ring) ring.style.transform = `rotate(${p * 90}deg)`;
-      }
+          // Then steps appear (progress 0.25 to 1.0)
+          const stepsProgress = Math.max(0, (p - 0.25) / 0.75);
+          steps.forEach((s, i) => {
+            const threshold = i / steps.length;
+            const local = Math.min(Math.max((stepsProgress - threshold) * steps.length, 0), 1);
+            s.style.opacity = local;
+          });
+          if (ring) ring.style.transform = `rotate(${p * 90}deg)`;
+        }
+      });
+    });
+
+    mm.add("(max-width: 768px)", () => {
+      // MOBILE: Keep steps fully visible with a clean scroll reveal, and keep the logo in a stable background state
+      const steps = document.querySelectorAll('.hub-step');
+      steps.forEach((step, i) => {
+        step.style.opacity = '1';
+        step.style.transform = 'none';
+        
+        gsap.fromTo(step, 
+          { opacity: 0, y: 30 },
+          { 
+            opacity: 1, 
+            y: 0, 
+            duration: 0.8, 
+            ease: 'power2.out',
+            scrollTrigger: {
+              trigger: step,
+              start: 'top 85%',
+              toggleActions: 'play none none none'
+            }
+          }
+        );
+      });
+
+      // Animate the 3D logo position smoothly as we scroll into the methodology section
+      ScrollTrigger.create({
+        trigger: '#methodology',
+        start: 'top 80%',
+        end: 'bottom 20%',
+        scrub: true,
+        onUpdate: (self) => {
+          const p = self.progress;
+          if (window.dynamicLogoTarget) {
+            // Keep it centered on mobile but scale up slightly as we scroll down the approach section
+            window.dynamicLogoTarget.x = 0;
+            window.dynamicLogoTarget.y = gsap.utils.interpolate(1.0, 0.2, p);
+            window.dynamicLogoTarget.scale = gsap.utils.interpolate(0.2, 0.35, p);
+          }
+        }
+      });
     });
 
     /* Removed stats count-up script */

@@ -14,6 +14,13 @@ if (holder) {
   holder.style.background = "radial-gradient(120% 100% at 50% 20%, #14304a 0%, #0d2338 45%, #081B2F 75%, #0A0A0A 100%)";
   holder.style.opacity = '1';
 
+  // If canvas successfully loads, make the hero section's background transparent
+  // to reveal the 3D logo behind it, while preserving the CSS fallback.
+  const heroSection = document.getElementById('hero');
+  if (heroSection) {
+    heroSection.style.background = 'transparent';
+  }
+
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(40, window.innerWidth/window.innerHeight, 0.1, 100);
   camera.position.set(0,0,6);
@@ -104,9 +111,22 @@ if (holder) {
   }
   animate();
 
+  let lastWidth = window.innerWidth;
+  let lastHeight = window.innerHeight;
+
   window.addEventListener('resize', () => {
-    camera.aspect = window.innerWidth/window.innerHeight;
-    camera.updateProjectionMatrix();
-    renderer.setSize(window.innerWidth, window.innerHeight);
+    const width = window.innerWidth;
+    const height = window.innerHeight;
+
+    // Only trigger heavy WebGL resize if width changed, or height changed significantly (e.g. orientation changes)
+    // This prevents mobile scrolling from destroying the WebGL context as the address bar resizes.
+    if (width !== lastWidth || Math.abs(height - lastHeight) > 120) {
+      lastWidth = width;
+      lastHeight = height;
+
+      camera.aspect = width / height;
+      camera.updateProjectionMatrix();
+      renderer.setSize(width, height);
+    }
   });
 }
