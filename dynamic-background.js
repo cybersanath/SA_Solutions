@@ -68,7 +68,13 @@ if (holder) {
   const clock = new THREE.Clock();
   
   // Shared logo target that can be animated by GSAP on specific pages
-  const logoTarget = { x: 3.2, y: 1.2, z: -1.6, scale: 0.34 };
+  const isMobile = window.innerWidth <= 768;
+  const logoTarget = { 
+    x: isMobile ? 0 : 3.2, 
+    y: isMobile ? 1.0 : 1.2, 
+    z: -1.6, 
+    scale: isMobile ? 0.2 : 0.34 
+  };
   window.dynamicLogoTarget = logoTarget;
   
   function animate() {

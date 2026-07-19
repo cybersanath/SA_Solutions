@@ -684,24 +684,12 @@
       transform: translateY(-50%);
     }
 
-    @media (max-width: 700px) {
-      .hub-step {
-        position: static;
-        width: auto;
-        margin-bottom: 14px;
-        opacity: 1;
-        transform: none;
-      }
-
+    @media (max-width: 768px) {
       .hub {
-        display: flex;
-        flex-direction: column;
-        height: auto;
-        width: 100%;
+        transform: scale(0.65);
       }
-
-      .hub-ring {
-        display: none;
+      .method-pin {
+        height: 80vh;
       }
     }
 
@@ -1676,24 +1664,7 @@
 
       /* Hub / Process elements */
       .hub {
-        max-width: 100% !important;
-        height: auto !important;
-      }
-
-      .hub-ring {
-        display: none !important;
-      }
-
-      .hub-step {
-        position: relative !important;
-        top: auto !important;
-        left: auto !important;
-        right: auto !important;
-        bottom: auto !important;
-        transform: none;
-        margin-bottom: 20px !important;
-        width: 100% !important;
-        opacity: 1;
+        /* Layout maintained exactly like desktop */
       }
 
       /* Fab / Misc fixes */
@@ -2445,46 +2416,43 @@ combining creative thinking with strategic implementation to deliver real busine
 
 
     /* ---------- Methodology: pinned hub, steps appear as user scrolls ---------- */
-    if (window.innerWidth > 768) {
-      ScrollTrigger.create({
-        trigger: '#methodology',
-        start: 'top top',
-        end: '+=80%',
-        pin: '.method-pin',
-        scrub: 0.5,
-        onUpdate: (self) => {
-          const p = self.progress;
-          const steps = document.querySelectorAll('.hub-step');
-          const ring = document.querySelector('.hub-ring');
+    ScrollTrigger.create({
+      trigger: '#methodology',
+      start: 'top top',
+      end: '+=80%',
+      pin: '.method-pin',
+      scrub: 0.5,
+      onUpdate: (self) => {
+        const p = self.progress;
+        const steps = document.querySelectorAll('.hub-step');
+        const ring = document.querySelector('.hub-ring');
 
-          // Logo moves to the center first (progress 0 to 0.25)
-          if (window.dynamicLogoTarget) {
-            const logoProgress = Math.min(p / 0.25, 1);
+        // Logo moves to the center first (progress 0 to 0.25)
+        if (window.dynamicLogoTarget) {
+          const isMobile = window.innerWidth <= 768;
+          const logoProgress = Math.min(p / 0.25, 1);
+          if (isMobile) {
+            window.dynamicLogoTarget.x = 0;
+            window.dynamicLogoTarget.y = gsap.utils.interpolate(1.0, 0.2, logoProgress);
+            window.dynamicLogoTarget.scale = gsap.utils.interpolate(0.2, 0.45, logoProgress);
+          } else {
             window.dynamicLogoTarget.x = gsap.utils.interpolate(3.2, 0, logoProgress);
             window.dynamicLogoTarget.y = gsap.utils.interpolate(1.2, 0.2, logoProgress);
             window.dynamicLogoTarget.scale = gsap.utils.interpolate(0.34, 0.75, logoProgress);
           }
-
-          // Then steps appear (progress 0.25 to 1.0)
-          const stepsProgress = Math.max(0, (p - 0.25) / 0.75);
-          steps.forEach((s, i) => {
-            const threshold = i / steps.length;
-            const local = Math.min(Math.max((stepsProgress - threshold) * steps.length, 0), 1);
-            s.style.opacity = local;
-            s.style.transform += ''; // keep base transform
-          });
-          if (ring) ring.style.transform = `rotate(${p * 90}deg)`;
         }
-      });
-    } else {
-      // On mobile, fade and slide up each step as it scrolls into view
-      gsap.utils.toArray('.hub-step').forEach((step, i) => {
-        gsap.fromTo(step,
-          { opacity: 0, y: 30 },
-          { opacity: 1, y: 0, duration: 0.8, ease: 'power2.out', scrollTrigger: { trigger: step, start: 'top 85%' } }
-        );
-      });
-    }
+
+        // Then steps appear (progress 0.25 to 1.0)
+        const stepsProgress = Math.max(0, (p - 0.25) / 0.75);
+        steps.forEach((s, i) => {
+          const threshold = i / steps.length;
+          const local = Math.min(Math.max((stepsProgress - threshold) * steps.length, 0), 1);
+          s.style.opacity = local;
+          s.style.transform += ''; // keep base transform
+        });
+        if (ring) ring.style.transform = `rotate(${p * 90}deg)`;
+      }
+    });
 
     /* Removed stats count-up script */
 
@@ -2554,6 +2522,7 @@ combining creative thinking with strategic implementation to deliver real busine
     <a style="color: var(--gold); margin-top: 16px; font-size: 0.9rem;" href="javascript:void(0);">Projects</a>
     <a href="index.html#methodology">Projects Portfolio</a>
     <a href="index.html#collaborate">Collaborate</a>
+    <a href="careers.html">Careers</a>
     <a href="index.html#contactForm"
       style="color: var(--gold); border: 1px solid rgba(212, 175, 55, 0.5); border-radius: 999px; padding: 12px 32px; margin-top: 16px; width: auto; max-width: 220px; font-size: 1rem;">Get
       in Touch</a>
